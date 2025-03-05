@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Custom Album</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white p-5 text-center">
+        <h1 class="text-3xl font-bold">আয়না ঘর Studio - Review Custom Album</h1>
+    </header>
+
+    <!-- Review Section -->
+    <div class="flex justify-center flex-wrap gap-6 p-6" id="review-gallery"></div>
+
+    <!-- Back to Gallery -->
+    <div class="text-center my-5">
+        <a href="gallery.html" class="bg-indigo-500 text-white p-2 rounded-md">Back to Gallery</a>
+    </div>
+
+    <script>
+        // Function to load selected images from local storage and display in the review gallery
+        function loadSelectedImages() {
+            const savedImages = JSON.parse(localStorage.getItem('selectedImages'));
+            const reviewGallery = document.getElementById('review-gallery');
+            if (savedImages && savedImages.length > 0) {
+                savedImages.forEach(imagePath => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('relative', 'overflow-hidden', 'w-48', 'h-48', 'rounded-lg', 'shadow-lg', 'bg-white');
+                    
+                    const img = document.createElement('img');
+                    img.src = imagePath;
+                    img.alt = imagePath;
+                    img.classList.add('w-full', 'h-full', 'object-cover');
+                    imgContainer.appendChild(img);
+
+                    reviewGallery.appendChild(imgContainer);
+                });
+            } else {
+                reviewGallery.innerHTML = "<p>No images selected yet.</p>";
+            }
+        }
+
+        // Initialize the review page
+        window.onload = loadSelectedImages;
+    </script>
+
+</body>
+</html>
