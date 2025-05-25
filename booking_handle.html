@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Sheet Data with Tailwind CSS</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom color theme */
+    body {
+      background-color: #1a202c; /* gray-900 */
+      color: #edf2f7; /* gray-100 */
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <h1 class="text-3xl font-bold mb-6 text-indigo-400">Live Google Sheet Data</h1>
+
+  <div class="overflow-x-auto">
+    <table id="dataTable" class="min-w-full border-collapse border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+      <!-- Data will be injected here -->
+    </table>
+  </div>
+
+  <script>
+    // Replace this with your Apps Script Web App URL
+    const sheetUrl = 'https://script.google.com/macros/s/AKfycbzsEzbyU8e8grdrqdCpYiOJ_B5OmmR4W93ytlnaXCqo13J91L8QePNhrYCUnkZjh8fJUw/exec';
+
+    fetch(sheetUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+
+        let html = '<thead><tr class="bg-indigo-600 text-white">';
+        data[0].forEach(header => {
+          html += `<th class="border border-indigo-500 px-4 py-2 text-left">${header}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        data.slice(1).forEach((row, i) => {
+          // Zebra striping: even rows have a darker bg
+          const rowBg = i % 2 === 0 ? 'bg-gray-700' : 'bg-gray-800';
+          html += `<tr class="${rowBg}">`;
+          row.forEach(cell => {
+            html += `<td class="border border-gray-600 px-4 py-2">${cell}</td>`;
+          });
+          html += '</tr>';
+        });
+
+        html += '</tbody>';
+        document.getElementById('dataTable').innerHTML = html;
+      })
+      .catch(err => {
+        document.getElementById('dataTable').innerHTML = `
+          <tr><td class="p-4 text-red-400" colspan="100%">Error loading data: ${err.message}</td></tr>
+        `;
+        console.error(err);
+      });
+  </script>
+
+</body>
+</html>
